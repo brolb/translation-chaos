@@ -36,8 +36,11 @@
           format: "text"
         })
       });
-      const data = await res.json();
-      return data.translatedText;
+    const data = await res.json();
+    if (!data.translatedText) {
+      return "[Error: Empty translation]";
+    }
+return data.translatedText;
     }
 
     async function translate() {
