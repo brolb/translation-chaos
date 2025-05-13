@@ -26,7 +26,7 @@
     const langs = ["fr", "de", "es", "ru", "it", "zh", "ar", "ja", "pt", "nl"];
     
     async function realTranslate(text, from, to) {
-      const res = await fetch("https://libretranslate.com/translate", {
+      const res = await fetch("https://translate.argosopentech.com/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -58,7 +58,7 @@
       // Final back to English
       text = await realTranslate(text, from, "en");
 
-      outputBox.value = text;
+        outputBox.value = text;
     }
 
     function runExample() {
