@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Translation Chaos</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    input, button, textarea { margin: 10px 0; width: 100%; padding: 8px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>Translation Chaos</h1>
+
+  <label>Text to Translate:</label>
+  <input id="textInput" placeholder="Type something...">
+
+  <label>How many times to translate:</label>
+  <input id="hopCount" type="number" value="10" min="1">
+
+  <button onclick="runExample()">Use Example</button>
+  <button onclick="translate()">Translate</button>
+
+  <h3>Result:</h3>
+  <textarea id="output" rows="8" readonly></textarea>
+
+  <script>
+    const langs = ["fr", "de", "es", "ru", "it", "zh", "ar", "ja", "pt", "nl"];
+    
+    async function realTranslate(text, from, to) {
+      const res = await fetch("https://libretranslate.com/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          q: text,
+          source: from,
+          target: to,
+          format: "text"
+        })
+      });
+      const data = await res.json();
+      return data.translatedText;
+    }
+
+    async function translate() {
+      const input = document.getElementById("textInput").value;
+      const hops = parseInt(document.getElementById("hopCount").value);
+      const outputBox = document.getElementById("output");
+      let text = input;
+      let from = "en";
+
+      outputBox.value = "Translating...";
+
+      for (let i = 0; i < hops; i++) {
+        let to = langs[Math.floor(Math.random() * langs.length)];
+        text = await realTranslate(text, from, to);
+        from = to;
+      }
+
+      // Final back to English
+      text = await realTranslate(text, from, "en");
+
+      outputBox.value = text;
+    }
+
+    function runExample() {
+      document.getElementById("textInput").value = "Strawberry";
+      document.getElementById("hopCount").value = "20";
+    }
+  </script>
+</body>
+</html>
